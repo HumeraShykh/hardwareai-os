@@ -2,7 +2,7 @@ import { useState, useEffect, useRef, useCallback } from 'react'
 import { Camera, Download, Video, VideoOff, Save, Images, X } from 'lucide-react'
 import axios from 'axios'
 
-import API from '../config'
+import API, { headers } from '../config'
 
 export default function CameraApp() {
   const videoRef  = useRef(null)
@@ -51,7 +51,7 @@ export default function CameraApp() {
       const blob = await (await fetch(snapshot)).blob()
       const filename = `snapshot-${Date.now()}.jpg`
       const form = new FormData(); form.append('file', blob, filename)
-      await axios.post(`${API}/photos/upload`, form)
+      await axios.post(`${API}/photos/upload`, form, { headers })
       setSaved(p => [{ name: filename, data: snapshot }, ...p])
       setSnapshot(null); setTab('gallery')
     } catch { alert('Save failed — is backend running?') }
@@ -60,7 +60,7 @@ export default function CameraApp() {
 
   const loadSaved = async () => {
     try {
-      const { data } = await axios.get(`${API}/photos/list`)
+      const { data } = await axios.get(`${API}/photos/list`, { headers })
       setSaved(data.photos.filter(p => p.name.startsWith('snapshot-')))
     } catch {}
   }

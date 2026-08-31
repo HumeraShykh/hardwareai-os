@@ -2,14 +2,14 @@ import { useState, useEffect } from 'react'
 import axios from 'axios'
 import { Play, Pause, Square, SkipBack, SkipForward, Volume2, Music, ListMusic } from 'lucide-react'
 
-import API from '../config'
+import API, { headers } from '../config'
 
 export default function MusicApp() {
   const [tracks, setTracks] = useState([])
   const [player, setPlayer] = useState({ status: 'stopped', current: null, volume: 70 })
 
   useEffect(() => {
-    axios.get(`${API}/music/list`).then(({ data }) => { setTracks(data.tracks); setPlayer(data.player) }).catch(() => {})
+    axios.get(`${API}/music/list`, { headers }).then(({ data }) => { setTracks(data.tracks); setPlayer(data.player) }).catch(() => {})
   }, [])
 
   const ctrl = async (action, track = null) => {

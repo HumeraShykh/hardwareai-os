@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import axios from 'axios'
 import { Wind, Droplets, RefreshCw, Thermometer, Eye, Gauge } from 'lucide-react'
 
-import API from '../config'
+import API, { headers } from '../config'
 const CITIES = ['karachi', 'lahore', 'islamabad']
 const ICONS = {
   'Sunny': '☀️', 'Hot & Hazy': '🌫️', 'Partly Cloudy': '⛅',
@@ -28,7 +28,7 @@ export default function WeatherApp() {
 
   const load = async (c = city) => {
     setLoading(true)
-    try { const { data } = await axios.get(`${API}/weather?city=${c}`); setWeather(data) } catch {}
+    try { const { data } = await axios.get(`${API}/weather?city=${c}`, { headers }); setWeather(data) } catch {}
     setLoading(false)
   }
 

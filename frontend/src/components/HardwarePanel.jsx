@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react'
 import axios from 'axios'
 import { Thermometer, Droplets, Wind, Zap, Activity, Send, ToggleLeft, ToggleRight, Terminal, Bot } from 'lucide-react'
 
-import API from '../config'
+import API, { headers } from '../config'
 
 const DEVICES = [
   { key: 'led',    label: 'LED',       icon: Zap,      color: '#e67700', bg: '#fffbeb', border: '#fde68a', bar: 'brightness' },
@@ -38,7 +38,7 @@ export default function HardwarePanel({ onAppOpen }) {
   useEffect(() => { chatRef.current?.scrollTo(0, chatRef.current.scrollHeight) }, [messages])
 
   const fetchStatus = async () => {
-    try { const { data } = await axios.get(`${API}/hardware/status`); setHw(data.hardware) } catch {}
+    try { const { data } = await axios.get(`${API}/hardware/status`, { headers }); setHw(data.hardware) } catch {}
   }
 
   const quickAction = async (device, action) => {
@@ -55,7 +55,7 @@ export default function HardwarePanel({ onAppOpen }) {
     if (lower.includes('music'))   { onAppOpen('music');   setLoading(false); setMessages(m => [...m, { role: 'ai', text: '🎵 Opening Music...' }]); return }
     if (lower.includes('photo'))   { onAppOpen('photos');  setLoading(false); setMessages(m => [...m, { role: 'ai', text: '🖼️ Opening Photos...' }]); return }
     try {
-      const { data } = await axios.post(`${API}/chat`, { message: msg })
+      const { data } = await axios.post(`${API}/chat`, { message: msg }, { headers })
       setMessages(m => [...m, { role: 'ai', text: data.response.replace(/ACTION:.*$/ms, '').trim() }])
       fetchStatus()
     } catch {

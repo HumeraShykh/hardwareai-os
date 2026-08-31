@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react'
 import axios from 'axios'
 import { Image, Upload, Download, X, ZoomIn, FolderOpen } from 'lucide-react'
 
-import API from '../config'
+import API, { headers } from '../config'
 
 export default function PhotosApp() {
   const [photos, setPhotos]     = useState([])
@@ -11,7 +11,7 @@ export default function PhotosApp() {
   const fileRef = useRef()
 
   const load = async () => {
-    try { const { data } = await axios.get(`${API}/photos/list`); setPhotos(data.photos) } catch {}
+    try { const { data } = await axios.get(`${API}/photos/list`, { headers }); setPhotos(data.photos) } catch {}
   }
 
   useEffect(() => { load() }, [])
@@ -20,7 +20,7 @@ export default function PhotosApp() {
     const file = e.target.files[0]; if (!file) return
     setUploading(true)
     const form = new FormData(); form.append('file', file)
-    await axios.post(`${API}/photos/upload`, form)
+    await axios.post(`${API}/photos/upload`, form, { headers })
     await load(); setUploading(false)
     e.target.value = ''
   }
